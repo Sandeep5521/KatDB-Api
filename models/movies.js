@@ -12,9 +12,18 @@ const movieSchema = mongoose.Schema({
         required: true,
         lowercase: true
     },
-    movieDescription: String,
-    movieThumbnail: String,
-    releaseYear:Number,
+    movieDescription: {
+        type:String,
+        required:true
+    },
+    movieThumbnail: {
+        type:String,
+        required:true
+    },
+    releaseYear:{
+        type:Number,
+        required:true
+    },
     movieTags: {
         type: Array,
         validate(val) {

@@ -5,6 +5,7 @@ const app = express();
 const PORT = process.env.port || 3000;
 app.use(express.json());
 const Movies = require('./models/movies.js');
+const Tags = require('./models/tags.js');
 
 app.get('/movie', async (req, res) => {
     if (req.query.name) {
@@ -59,6 +60,11 @@ app.post('/movie', async (req, res) => {
     const tmp = await Movies.insertMany([req.body]);
     res.send(tmp);
 })
+app.get('/tags', async (req, res) => {
+    const tmp = await Tags.find();
+    res.send(tmp);
+})
 app.listen(PORT, () => {
     console.log('server runs');
 })
+
