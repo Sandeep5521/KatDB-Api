@@ -1,4 +1,4 @@
-const { query } = require('express');
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const con=require('./src/db.js');
@@ -74,7 +74,7 @@ app.get('/tags', async (req, res) => {
     res.send(tmp);
 })
 const start =async ()=>{
-    await con();
+    await con(process.env.MONGODB_URL);
     app.listen(PORT, () => {
         console.log('server runs');
     })
