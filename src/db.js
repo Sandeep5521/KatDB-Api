@@ -1,8 +1,12 @@
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', true)
-mongoose.connect("mongodb://localhost:27017/mdb") //{ useNewUrlParser: true, useUnifiedTopology: true}
-    .then(() => {
-        console.log("connection Successful");
-    }, (err) => {
-        console.log(err);
+const url = 'mongodb+srv://sundeep5521:ltX3w2FE561oyB1e@cluster0.aiucyms.mongodb.net/?retryWrites=true&w=majority'
+ //{ useNewUrlParser: true, useUnifiedTopology: true}
+const con=()=>{
+    return mongoose.connect(url,{ 
+        useNewUrlParser: true,
+        useUnifiedTopology: true
     });
+}
+
+module.exports = con;
