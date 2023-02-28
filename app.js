@@ -60,7 +60,7 @@ app.post('/movie', async (req, res) => {
     const tmp = await Movies.insertMany([req.body]);
     const li = req.body.movieTags;
     for(let i=0;i<li.length;i++){
-        let result = await Tags.update({tagName:li[i]},{
+        let result = await Tags.updateOne({tagName:li[i]},{
             $inc:{
                 tagMovies:1
             }
