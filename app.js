@@ -1,7 +1,7 @@
 const { query } = require('express');
 const express = require('express');
 const app = express();
-//require('./src/db.js');
+const con=require('./src/db.js');
 const PORT = process.env.port || 3000;
 app.use(express.json());
 const Movies = require('./models/movies.js');
@@ -73,7 +73,11 @@ app.get('/tags', async (req, res) => {
     const tmp = await Tags.find();
     res.send(tmp);
 })
-app.listen(PORT, () => {
-    console.log('server runs');
-})
+const start =async ()=>{
+    await con();
+    app.listen(PORT, () => {
+        console.log('server runs');
+    })
+}
+start();
 
