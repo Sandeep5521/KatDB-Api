@@ -7,6 +7,9 @@ app.use(express.json());
 const Movies = require('./models/movies.js');
 const Tags = require('./models/tags.js');
 
+app.get('/',(req,res)=>{
+    res.send('hello')
+})
 app.get('/movie', async (req, res) => {
     if (req.query.name) {
         const str = req.query.name;
