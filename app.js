@@ -6,7 +6,7 @@ const PORT = process.env.port || 3000;
 app.use(express.json());
 const Movies = require('./models/movies.js');
 const Tags = require('./models/tags.js');
-
+console.log(PORT);
 app.get('/',(req,res)=>{
     res.send('hello i m live')
 })
