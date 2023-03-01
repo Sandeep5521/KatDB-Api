@@ -8,7 +8,7 @@ const Movies = require('./models/movies.js');
 const Tags = require('./models/tags.js');
 
 app.get('/',(req,res)=>{
-    res.send('hello')
+    res.send('hello i m live')
 })
 app.get('/movie', async (req, res) => {
     if (req.query.name) {
