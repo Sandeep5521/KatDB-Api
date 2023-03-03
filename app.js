@@ -129,14 +129,14 @@ app.get('/shows', async (req, res) => {
 app.post('/shows', async (req, res) => {
     const tmp = await Shows.insertMany([req.body]);
     const li = req.body.showTags;
-    // for(let i=0;i<li.length;i++){
-    //     let result = await Tags.updateOne({tagName:li[i]},{
-    //         $inc:{
-    //             tagShows:1
-    //         }
-    //     })
-    //     console.log(result);
-    // }
+    for(let i=0;i<li.length;i++){
+        let result = await Tags.updateOne({tagName:li[i]},{
+            $inc:{
+                tagShows:1
+            }
+        })
+        console.log(result);
+    }
     res.send(tmp);
 })
 
