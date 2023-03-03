@@ -1,14 +1,14 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const con=require('./src/db.js');
+const con = require('./src/db.js');
 const PORT = process.env.port || 3000;
 app.use(express.json());
 const Movies = require('./models/movies.js');
 const Tags = require('./models/tags.js');
 const Shows = require('./models/shows.js');
 
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
     res.send('hello i m live')
 })
 
@@ -62,7 +62,7 @@ app.get('/movie', async (req, res) => {
             res.sendStatus(404);
         }
     }
-    else{
+    else {
         res.sendStatus(404);
     }
 })
@@ -70,10 +70,10 @@ app.get('/movie', async (req, res) => {
 app.post('/movie', async (req, res) => {
     const tmp = await Movies.insertMany([req.body]);
     const li = req.body.movieTags;
-    for(let i=0;i<li.length;i++){
-        let result = await Tags.updateOne({tagName:li[i]},{
-            $inc:{
-                tagMovies:1
+    for (let i = 0; i < li.length; i++) {
+        let result = await Tags.updateOne({ tagName: li[i] }, {
+            $inc: {
+                tagMovies: 1
             }
         })
         console.log(result);
@@ -121,7 +121,7 @@ app.get('/shows', async (req, res) => {
             res.sendStatus(404);
         }
     }
-    else{
+    else {
         res.sendStatus(404);
     }
 })
@@ -129,10 +129,10 @@ app.get('/shows', async (req, res) => {
 app.post('/shows', async (req, res) => {
     const tmp = await Shows.insertMany([req.body]);
     const li = req.body.showTags;
-    for(let i=0;i<li.length;i++){
-        let result = await Tags.updateOne({tagName:li[i]},{
-            $inc:{
-                tagShows:1
+    for (let i = 0; i < li.length; i++) {
+        let result = await Tags.updateOne({ tagName: li[i] }, {
+            $inc: {
+                tagShows: 1
             }
         })
         console.log(result);
@@ -140,10 +140,16 @@ app.post('/shows', async (req, res) => {
     res.send(tmp);
 })
 
-app.get('*',(req,res)=>{
+app.patch('/shows', async (req, res) => { // for adding episodes
+    const id = req.query.id;
+    const tmp = await Shows.findOneAndUpdate({"showSeasons.seasonId": id}, { $push: { "showSeasons.$.episodes": req.body } });
+    console.log(tmp);
+})
+
+app.get('*', (req, res) => {
     res.sendStatus(404);
 })
-const start =async ()=>{
+const start = async () => {
     await con(process.env.MONGODB_URL);
     app.listen(PORT, () => {
         console.log('server runs');
