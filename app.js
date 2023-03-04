@@ -200,7 +200,7 @@ app.get('/shows/download', async (req, res) => {
 })
 
 app.get('*', (req, res) => {
-    res.sendStatus(404);
+    res.status(404).send('bug !!!');
 })
 const start = async () => {
     await con(process.env.MONGODB_URL);
