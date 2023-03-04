@@ -17,6 +17,7 @@ app.get('/movie', async (req, res) => {
         const str = req.query.name;
         try {
             const tmp = await Movies.find({ movieName: str }).select({
+                movieDownloads: 0,
                 date: 0,
                 __v: 0
             });
@@ -54,8 +55,26 @@ app.get('/movie', async (req, res) => {
     else if (req.query.id) {
         try {
             const tmp = await Movies.find({ _id: req.query.id }).select({
+                movieDownloads: 0,
                 date: 0,
                 __v: 0
+            });
+            res.send(tmp);
+        } catch (error) {
+            res.sendStatus(404);
+        }
+    }
+    else {
+        res.sendStatus(404);
+    }
+})
+
+app.get('/movie/download', async (req, res) => {
+    if (req.query.id) {
+        try {
+            const tmp = await Movies.find({ _id: req.query.id }).select({
+                movieDownloads: 1,
+                movieName:1,
             });
             res.send(tmp);
         } catch (error) {
@@ -142,8 +161,10 @@ app.post('/shows', async (req, res) => {
 
 app.patch('/shows', async (req, res) => { // for adding episodes
     const id = req.query.id;
-    const tmp = await Shows.findOneAndUpdate({"showSeasons.seasonId": id}, { $push: { "showSeasons.$.episodes": req.body } });
-    console.log(tmp);
+    const tmp = await Shows.findOneAndUpdate({_id: id}, { $push: { showEpisodes: req.body } },{ $set: {
+        date:Date.now()
+    }});
+    res.send(tmp);
 })
 
 app.get('*', (req, res) => {

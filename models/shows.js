@@ -12,10 +12,12 @@ const movieSchema = mongoose.Schema({
         lowercase: true,
         required: true
     },
+    seasonNum:String,
     showDescription: {
         type: String,
         required: true
     },
+    releaseYear:String,
     showThumbnail: {
         type:String,
         required:true
@@ -28,41 +30,24 @@ const movieSchema = mongoose.Schema({
             }
         }
     },
-    showSeasons: [
+    showShots:Array,
+    showEpisodes: [
         {
             _id:false,
-            seasonId: {
+            episodeId: {
                 type: String,
                 lowercase: true,
                 required: true
             },
-            releaseYear: {
-                type: Number,
-                required: true
+            episodeName: {
+                type: String,
+                lowercase: true
             },
-            seasonThumbnail: {
-                type:String,
-                required:true
-            },
-            seasonShots:Array,
-            episodes: [
-                {
-                    _id:false,
-                    episodeId: {
-                        type: String,
-                        lowercase: true,
-                        required: true
-                    },
-                    episodeName: {
-                        type: String,
-                        lowercase: true
-                    },
-                    downloads: {
-                        hindi: Array,
-                        english: Array
-                    }
-                }
-            ]
+            episodeNum:String,
+            downloads: {
+                hindi: Array,
+                english: Array
+            }
         }
     ],
     date: {
