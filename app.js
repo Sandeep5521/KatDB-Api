@@ -65,8 +65,33 @@ app.get('/movie', async (req, res) => {
         }
     }
     else {
-        res.sendStatus(404);
+        try {
+            const tmp = await Movies.find().select({
+                movieShots:0,
+                movieDescription:0,
+                movieDownloads: 0,
+                date: 0,
+                __v: 0
+            }).sort({date:-1});
+            res.send(tmp);
+        } catch (error) {
+            res.sendStatus(404);
+        }
     }
+})
+
+app.post('/movie', async (req, res) => {
+    const tmp = await Movies.insertMany([req.body]);
+    const li = req.body.movieTags;
+    for (let i = 0; i < li.length; i++) {
+        let result = await Tags.updateOne({ tagName: li[i] }, {
+            $inc: {
+                tagMovies: 1
+            }
+        })
+        console.log(result);
+    }
+    res.send(tmp);
 })
 
 app.get('/movie/download', async (req, res) => {
@@ -86,22 +111,10 @@ app.get('/movie/download', async (req, res) => {
     }
 })
 
-app.post('/movie', async (req, res) => {
-    const tmp = await Movies.insertMany([req.body]);
-    const li = req.body.movieTags;
-    for (let i = 0; i < li.length; i++) {
-        let result = await Tags.updateOne({ tagName: li[i] }, {
-            $inc: {
-                tagMovies: 1
-            }
-        })
-        console.log(result);
-    }
-    res.send(tmp);
-})
-
 app.get('/tags', async (req, res) => {
-    const tmp = await Tags.find();
+    const tmp = await Tags.find().select({
+        __v:0
+    });
     res.send(tmp);
 })
 
@@ -110,6 +123,7 @@ app.get('/shows', async (req, res) => {
         const str = req.query.name;
         try {
             const tmp = await Shows.find({ showName: str }).select({
+                "showEpisodes.downloads":0,
                 date: 0,
                 __v: 0
             });
@@ -121,9 +135,9 @@ app.get('/shows', async (req, res) => {
     }
     else if (req.query.tag) {
         const tmp = await Shows.find({ showTags: req.query.tag }).select({
-            showDownloads: 0,
-            showTags: 0,
-            showSeasons: 0,
+            showEpisodes: 0,
+            showShots:0,
+            showEpisodes:0,
             date: 0,
             __v: 0
         });
@@ -132,6 +146,7 @@ app.get('/shows', async (req, res) => {
     else if (req.query.id) {
         try {
             const tmp = await Shows.find({ _id: req.query.id }).select({
+                "showEpisodes.downloads":0,
                 date: 0,
                 __v: 0
             });
@@ -165,6 +180,23 @@ app.patch('/shows', async (req, res) => { // for adding episodes
         date:Date.now()
     }});
     res.send(tmp);
+})
+
+app.get('/shows/download', async (req, res) => {
+    if (req.query.id) {
+        try {
+            const tmp = await Shows.find({ _id: req.query.id }).select({
+                showEpisodes: 1,
+                showName:1
+            });
+            res.send(tmp);
+        } catch (error) {
+            res.sendStatus(404);
+        }
+    }
+    else {
+        res.sendStatus(404);
+    }
 })
 
 app.get('*', (req, res) => {

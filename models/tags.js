@@ -8,7 +8,10 @@ const tagSchema = mongoose.Schema({
         lowercase: true
     },
     tagDescription: String,
-    tagMovies: Number,
+    tagMovies: {
+        type: Number,
+        default: 0
+    },
     tagShows: {
         type: Number,
         default: 0
