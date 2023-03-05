@@ -30,9 +30,11 @@ app.get('/movie', async (req, res) => {
     else if (req.query.tag) {
         try {
             const tmp = await Movies.find({ movieTags: req.query.tag }).select({
+                movieDirectors:0,
                 movieDownloads: 0,
                 movieTags: 0,
                 movieShots: 0,
+                movieReview:0,
                 date: 0,
                 __v: 0
             });
@@ -45,9 +47,11 @@ app.get('/movie', async (req, res) => {
         try {
             const nums = Number.parseInt(req.query.year);
             const tmp = await Movies.find({ releaseYear: nums }).select({
+                movieDirectors:0,
                 movieDownloads: 0,
                 movieTags: 0,
                 movieShots: 0,
+                movieReview:0,
                 date: 0,
                 __v: 0
             });
@@ -77,6 +81,7 @@ app.get('/movie', async (req, res) => {
         if(Skip < Count){
             try {
                 const tmp = await Movies.find().select({
+                    movieDirectors:0,
                     movieShots:0,
                     movieDescription:0,
                     movieDownloads: 0,
@@ -136,7 +141,10 @@ app.get('/shows', async (req, res) => {
         const str = req.query.name;
         try {
             const tmp = await Shows.find({ showName: str }).select({
+                movieCreators:0,
                 "showEpisodes.downloads":0,
+                showShots:0,
+                showReview:0,
                 date: 0,
                 __v: 0
             });
@@ -149,8 +157,26 @@ app.get('/shows', async (req, res) => {
     else if (req.query.tag) {
         try {
             const tmp = await Shows.find({ showTags: req.query.tag }).select({
+                movieCreators:0,
                 showEpisodes: 0,
                 showShots:0,
+                showReview:0,
+                showEpisodes:0,
+                date: 0,
+                __v: 0
+            });
+            res.send(tmp);
+        } catch (error) {
+            res.sendStatus(400);
+        }
+    }
+    else if (req.query.year) {
+        try {
+            const tmp = await Shows.find({ releaseYear: req.query.year }).select({
+                movieCreators:0,
+                showEpisodes: 0,
+                showShots:0,
+                showReview:0,
                 showEpisodes:0,
                 date: 0,
                 __v: 0
@@ -172,9 +198,30 @@ app.get('/shows', async (req, res) => {
             res.sendStatus(400);
         }
     }
-    else {
-        res.sendStatus(404);
+    else if(req.query.page) {
+        const Count = await Shows.find().count();
+        const page = Number(req.query.page);
+        const Limit = 10;
+        const Skip = (page-1)*Limit;
+
+        if(Skip < Count){
+            try {
+                const tmp = await Shows.find().select({
+                    showCreators:0,
+                    showShots:0,
+                    showDescription:0,
+                    showEpisodes:0,
+                    date: 0,
+                    __v: 0
+                }).skip(Skip).limit(Limit).sort({date:-1});
+                res.send(tmp);
+            } catch (error) {
+                res.sendStatus(400);
+            }
+        }
+        else res.sendStatus(404);
     }
+    else res.sendStatus(404);
 })
 
 app.post('/shows', async (req, res) => {

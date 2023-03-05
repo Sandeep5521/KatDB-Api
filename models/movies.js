@@ -11,21 +11,24 @@ const movieSchema = mongoose.Schema({
         type: String,
         required: true,
         lowercase: true,
-        unique:true
+        unique: true
     },
     movieDescription: {
-        type:String,
-        required:true
+        type: String,
+        required: true
     },
     movieThumbnail: {
-        type:String,
-        required:true
+        type: String,
+        required: true
     },
-    releaseYear:{
-        type:Number,
-        required:true
+    releaseYear: {
+        type: Number,
+        required: true
     },
-    movieShots:Array,
+    movieDirectors: {
+        type: Array,
+        required: true
+    },
     movieTags: {
         type: Array,
         validate(val) {
@@ -34,10 +37,13 @@ const movieSchema = mongoose.Schema({
             }
         }
     },
+    movieShots: Array,
     movieDownloads: {
-        english : Array,
-        hindi : Array
+        english: Array,
+        hindi: Array,
+        subbed: Array
     },
+    movieReview: String,
     date: {
         type: Date,
         default: Date.now
