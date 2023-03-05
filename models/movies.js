@@ -10,7 +10,8 @@ const movieSchema = mongoose.Schema({
     movieName: {
         type: String,
         required: true,
-        lowercase: true
+        lowercase: true,
+        unique:true
     },
     movieDescription: {
         type:String,
