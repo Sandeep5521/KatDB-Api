@@ -22,10 +22,7 @@ const movieSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    showCreators: {
-        type: Array,
-        required: true
-    },
+    showCreators: Array,
     showTags: {
         type: Array,
         validate(val) {

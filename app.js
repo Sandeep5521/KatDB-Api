@@ -16,14 +16,13 @@ app.get('/movies', async (req, res) => {
     if (req.query.name) {
         const str = req.query.name;
         try {
-            const tmp = await Movies.find({ movieName: str }).select({
-                movieDownloads: 0,
+            const tmp = await Movies.findOne({ movieName: str }).select({
                 date: 0,
                 __v: 0
             });
             res.send(tmp);
         } catch (error) {
-            res.sendStatus(400);
+            res.sendStatus(502);
         }
 
     }
@@ -40,7 +39,7 @@ app.get('/movies', async (req, res) => {
             });
             res.send(tmp);
         } catch (error) {
-            res.sendStatus(400)
+            res.sendStatus(502)
         }
     }
     else if (req.query.year) {
@@ -57,19 +56,18 @@ app.get('/movies', async (req, res) => {
             });
             res.send(tmp);
         } catch (error) {
-            res.sendStatus(400);
+            res.sendStatus(502);
         }
     }
     else if (req.query.id) {
         try {
-            const tmp = await Movies.find({ _id: req.query.id }).select({
-                movieDownloads: 0,
+            const tmp = await Movies.findOne({ _id: req.query.id }).select({
                 date: 0,
                 __v: 0
             });
             res.send(tmp);
         } catch (error) {
-            res.sendStatus(400);
+            res.sendStatus(502);
         }
     }
     else if (req.query.page) {
@@ -83,6 +81,7 @@ app.get('/movies', async (req, res) => {
                 const tmp = await Movies.find().select({
                     movieDirectors: 0,
                     movieShots: 0,
+                    movieReview: 0,
                     movieDescription: 0,
                     movieDownloads: 0,
                     date: 0,
@@ -90,12 +89,12 @@ app.get('/movies', async (req, res) => {
                 }).skip(Skip).limit(Limit).sort({ date: -1 });
                 res.send(tmp);
             } catch (error) {
-                res.sendStatus(400);
+                res.sendStatus(502);
             }
         }
-        else res.sendStatus(400);
+        else res.sendStatus(404);
     }
-    else res.sendStatus(404);
+    else res.sendStatus(400);
 })
 
 app.post('/movies', async (req, res) => {
@@ -112,6 +111,24 @@ app.post('/movies', async (req, res) => {
     res.send(tmp);
 })
 
+app.patch('/movies', async (req, res) => { // for adding episodes
+    const id = req.query.id;
+    try {
+        const tmp = await Shows.findOneAndUpdate({ _id: id }, {
+            $set: {
+                movieShots: req.body.shots,
+                "movieDownloads.hindi": req.body.hindi,
+                "movieDownloads.english": req.body.english,
+                "movieDownloads.subbed": req.hindi,
+                date: Date.now()
+            }
+        });
+        res.send(tmp);
+    } catch (error) {
+        res.sendStatus(502);
+    }
+})
+
 app.get('/tags', async (req, res) => {
     const tmp = await Tags.find().select({
         _id: 0,
@@ -126,7 +143,7 @@ app.get('/shows', async (req, res) => {
         try {
             const tmp = await Shows.find({ showName: str }).select({
                 movieCreators: 0,
-                "showEpisodes.downloads": 0,
+                showEpisodes: 0,
                 showShots: 0,
                 showReview: 0,
                 date: 0,
@@ -134,7 +151,7 @@ app.get('/shows', async (req, res) => {
             });
             res.send(tmp);
         } catch (error) {
-            res.sendStatus(400);
+            res.sendStatus(502);
         }
 
     }
@@ -151,7 +168,7 @@ app.get('/shows', async (req, res) => {
             });
             res.send(tmp);
         } catch (error) {
-            res.sendStatus(400);
+            res.sendStatus(502);
         }
     }
     else if (req.query.year) {
@@ -167,19 +184,18 @@ app.get('/shows', async (req, res) => {
             });
             res.send(tmp);
         } catch (error) {
-            res.sendStatus(400);
+            res.sendStatus(502);
         }
     }
     else if (req.query.id) {
         try {
-            const tmp = await Shows.find({ _id: req.query.id }).select({
-                "showEpisodes.downloads": 0,
+            const tmp = await Shows.findOne({ _id: req.query.id }).select({
                 date: 0,
                 __v: 0
             });
             res.send(tmp);
         } catch (error) {
-            res.sendStatus(400);
+            res.sendStatus(502);
         }
     }
     else if (req.query.page) {
@@ -193,6 +209,7 @@ app.get('/shows', async (req, res) => {
                 const tmp = await Shows.find().select({
                     showCreators: 0,
                     showShots: 0,
+                    showReview: 0,
                     showDescription: 0,
                     showEpisodes: 0,
                     date: 0,
@@ -200,12 +217,12 @@ app.get('/shows', async (req, res) => {
                 }).skip(Skip).limit(Limit).sort({ date: -1 });
                 res.send(tmp);
             } catch (error) {
-                res.sendStatus(400);
+                res.sendStatus(502);
             }
         }
-        else res.sendStatus(400);
+        else res.sendStatus(404);
     }
-    else res.sendStatus(404);
+    else res.sendStatus(400);
 })
 
 app.post('/shows', async (req, res) => {
@@ -232,37 +249,44 @@ app.patch('/shows', async (req, res) => { // for adding episodes
         });
         res.send(tmp);
     } catch (error) {
-        res.sendStatus(400);
+        res.sendStatus(502);
     }
 })
 
-app.get('/download', async (req, res) => {
-    if (req.query.id && req.query.type) {
-        if (req.query.type == 'movie') {
-            try {
-                const tmp = await Movies.find({ _id: req.query.id }).select({
-                    movieName: 1,
-                    movieDownloads: 1
-                });
-                res.send(tmp);
-            } catch (error) {
-                res.sendStatus(400);
-            }
+app.get('/random', async (req, res) => {
+    if (req.query.type == 'movie') {
+        try {
+            const tmp = await Movies.aggregate([
+                { $sample: { size: 1 } },
+                {
+                    $project: {
+                        date: 0,
+                        __v: 0
+                    }
+                }
+            ]);
+            res.send(tmp);
+        } catch (error) {
+            res.sendStatus(502);
         }
-        else if (req.query.type == 'show') {
-            try {
-                const tmp = await Shows.find({ _id: req.query.id }).select({
-                    showName: 1,
-                    showEpisodes: 1
-                });
-                res.send(tmp);
-            } catch (error) {
-                res.sendStatus(400);
-            }
-        }
-        else res.sendStatus(400);
     }
-    else res.sendStatus(404);
+    else if (req.query.type == 'show') {
+        try {
+            const tmp = await Shows.aggregate([
+                { $sample: { size: 1 } },
+                {
+                    $project: {
+                        date: 0,
+                        __v: 0
+                    }
+                }
+            ]);
+            res.send(tmp);
+        } catch (error) {
+            res.sendStatus(502);
+        }
+    }
+    else res.sendStatus(400);
 })
 
 app.get('*', (req, res) => {

@@ -25,10 +25,7 @@ const movieSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-    movieDirectors: {
-        type: Array,
-        required: true
-    },
+    movieDirectors: Array,
     movieTags: {
         type: Array,
         validate(val) {
