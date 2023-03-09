@@ -3,13 +3,13 @@ const express = require('express');
 const app = express();
 const con = require('./src/db.js');
 const PORT = process.env.port || 3000;
-app.use(express.json());
 const Movies = require('./models/movies.js');
 const Tags = require('./models/tags.js');
 const Shows = require('./models/shows.js');
+app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send('hello i m live')
+    res.sendFile(__dirname+'/src/index.html');
 })
 
 app.get('/movies', async (req, res) => {
