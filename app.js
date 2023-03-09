@@ -73,7 +73,7 @@ app.get('/movies', async (req, res) => {
     else if (req.query.page) {
         const Count = await Movies.find().count();
         const page = Number(req.query.page);
-        const Limit = 10;
+        const Limit = 16;
         const Skip = (page - 1) * Limit;
 
         if (Skip < Count) {
@@ -134,6 +134,11 @@ app.get('/tags', async (req, res) => {
         _id: 0,
         __v: 0
     });
+    res.send(tmp);
+})
+
+app.patch('/tags', async (req, res) => {
+    const tmp = await Tags.insertMany([req.body]);
     res.send(tmp);
 })
 
