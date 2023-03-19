@@ -70,10 +70,10 @@ app.get('/movies', async (req, res) => {
             res.sendStatus(502);
         }
     }
-    else if (req.query.page) {
+    else if (req.query.page && req.query.limit) {
         const Count = await Movies.find().count();
         const page = Number(req.query.page);
-        const Limit = 16;
+        const Limit = Number(req.query.limit);
         const Skip = (page - 1) * Limit;
 
         if (Skip < Count) {
@@ -203,10 +203,10 @@ app.get('/shows', async (req, res) => {
             res.sendStatus(502);
         }
     }
-    else if (req.query.page) {
+    else if (req.query.page && req.query.limit) {
         const Count = await Shows.find().count();
         const page = Number(req.query.page);
-        const Limit = 10;
+        const Limit = Number(req.query.limit);
         const Skip = (page - 1) * Limit;
 
         if (Skip < Count) {
