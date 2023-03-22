@@ -9,7 +9,7 @@ const Shows = require('./models/shows.js');
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname+'/src/index.html');
+    res.sendFile(__dirname + '/src/index.html');
 })
 
 app.get('/movies', async (req, res) => {
@@ -247,7 +247,8 @@ app.post('/shows', async (req, res) => {
 app.patch('/shows', async (req, res) => { // for adding episodes
     const id = req.query.id;
     try {
-        const tmp = await Shows.findOneAndUpdate({ _id: id }, { $push: { showEpisodes: req.body } }, {
+        const tmp = await Shows.findOneAndUpdate({ _id: id }, {
+            $push: { showEpisodes: req.body },
             $set: {
                 date: Date.now()
             }
