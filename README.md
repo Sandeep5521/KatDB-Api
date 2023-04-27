@@ -1,4 +1,13 @@
 
+# katDB API
+
+Welcome to the KatDB Movies and TV Shows API! Our API provides free access to a comprehensive collection of movies and TV shows, allowing you to retrieve detailed information about each title, including its title, year of release, genre, cast, ratings, and more.
+
+Our API is currently deployed on Render and can be accessed through the following URL: https://katdb-bogk.onrender.com/. To use our API, simply make HTTP requests to our endpoints, passing the necessary parameters to retrieve the desired information. Our API supports various HTTP methods, including GET, POST, PUT, and DELETE, allowing you to perform various operations on our database.
+
+
+
+
 ## Documentation
 
 Here are some of the key endpoints available in our API:
