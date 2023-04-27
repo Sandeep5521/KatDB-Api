@@ -93,7 +93,17 @@ app.get("/movies", async (req, res) => {
         res.sendStatus(502);
       }
     } else res.sendStatus(404);
-  } else res.sendStatus(400);
+  } else {
+    try {
+      const tmp = await Movies.findOne().select({
+        date: 0,
+        __v: 0,
+      });
+      res.send(tmp);
+    } catch (error) {
+      res.sendStatus(502);
+    }
+  }
 });
 
 app.post("/movies", async (req, res) => {
