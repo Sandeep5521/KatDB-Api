@@ -34,7 +34,3 @@ Here are some of the key endpoints available in our API:
 To access our API, you don't need to sign up for an API key. Our API documentation provides detailed instructions on how to make requests, as well as examples of the JSON responses you can expect to receive.
 
 We hope you find our KatDB Movies and TV Shows API useful! If you have any questions or encounter any issues, please don't hesitate to contact us through our website or email.
-
-To access our API, you don't need to sign up for an API key. Our API documentation provides detailed instructions on how to make requests, as well as examples of the JSON responses you can expect to receive.
-
-We hope you find our KatDB Movies and TV Shows API useful! If you have any questions or encounter any issues, please don't hesitate to contact us through our website or email.
